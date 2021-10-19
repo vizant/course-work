@@ -31,4 +31,12 @@ public abstract class AbstractScheme {
     }
 
     public abstract ComplexMatrix calculateResultMatrix();
+
+    public double getH_z() {
+        return h_z;
+    }
+
+    public double getH_r() {
+        return h_r;
+    }
 }

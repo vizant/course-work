@@ -2,6 +2,10 @@ package com.ssau.pmi.complex;
 
 import org.apache.commons.math3.complex.Complex;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class ComplexMatrix {
     private final int rows;
     private final int columns;
@@ -36,6 +40,14 @@ public class ComplexMatrix {
 
     public Complex get(int row, int column) throws ArrayIndexOutOfBoundsException {
         return elements[row - 1][column - 1];
+    }
+
+    public double[] getRow(int row) {
+        return Arrays.stream(elements[row - 1]).mapToDouble(Complex::abs).toArray();
+    }
+
+    public double[] getColumn(int column) {
+        return Arrays.stream(elements).mapToDouble(array -> array[column - 1].abs()).toArray();
     }
 
     @Override
