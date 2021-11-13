@@ -8,9 +8,8 @@ public class SchemeImplicit extends AbstractScheme {
     private final Integer J;
     private final Integer K;
 
-    public SchemeImplicit(double R, double L, double lambda, double n, Integer J, Integer K,
-                          Variable fixedVariableType, double fixedVariableValue) {
-        super(R, L, lambda, n, fixedVariableType, fixedVariableValue);
+    public SchemeImplicit(double R, double L, double lambda, double n, Integer J, Integer K) {
+        super(R, L, lambda, n);
         this.J = J;
         this.K = K;
         h_z = L / K;

@@ -5,12 +5,11 @@ import com.ssau.pmi.utils.Variable;
 import org.apache.commons.math3.complex.Complex;
 
 public class SchemeCN extends AbstractScheme {
-    private Integer I;
-    private Integer J;
+    private final Integer I;
+    private final Integer J;
 
-    public SchemeCN(double R, double L, double lambda, double n, Integer I,
-                    Integer J, Variable fixedVariableType, double fixedVariableValue) {
-        super(R, L, lambda, n, fixedVariableType, fixedVariableValue);
+    public SchemeCN(double R, double L, double lambda, double n, Integer I, Integer J) {
+        super(R, L, lambda, n);
         this.I = I;
         this.J = J;
         h_z = L / J;
