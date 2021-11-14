@@ -44,8 +44,7 @@ public class GraphicBuilder extends JFrame {
         setTitle(Constants.CHMMF_COURSE);
         setLocationRelativeTo(null);
 
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private XYDataset createDataset() {
