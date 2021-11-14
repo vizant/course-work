@@ -8,18 +8,31 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="265.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ssau.pmi.controllers.MainController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="266.0" prefWidth="595.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ssau.pmi.controllers.MainController">
    <children>
       <Button fx:id="btnBuild" layoutX="240.0" layoutY="214.0" mnemonicParsing="false" onAction="#buildButtonOnAction" text="Построить график" />
       <HBox layoutX="24.0" layoutY="27.0" prefHeight="132.0" prefWidth="225.0" spacing="20.0">
          <children>
             <VBox alignment="CENTER_RIGHT" prefHeight="130.0" prefWidth="52.0" spacing="20.0">
                <children>
-                  <Label text="R" />
-                  <Label prefHeight="17.0" prefWidth="8.0" text="L" />
-                  <Label text="n" />
-                  <Label text="λ" />
+                  <Label text="R" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                  <Label prefHeight="17.0" prefWidth="8.0" text="L" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                  <Label text="n" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                  <Label text="λ" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
@@ -36,10 +49,22 @@
          <children>
             <VBox prefHeight="132.0" prefWidth="162.0" spacing="20.0">
                <children>
-                  <Label prefHeight="17.0" prefWidth="179.0" text="Количество шагов по r" />
-                  <Label prefHeight="17.0" prefWidth="128.0" text="Количество шагов по z" />
-                  <Label prefHeight="17.0" prefWidth="155.0" text="Фиксируемая переменная" />
-                  <Label prefHeight="17.0" prefWidth="155.0" text="Фиксированные значения" />
+                  <Label prefHeight="17.0" prefWidth="179.0" text="Количество шагов по r" textFill="WHITE">
+                     <font>
+                        <Font name="Times New Roman Bold" size="12.0" />
+                     </font></Label>
+                  <Label prefHeight="17.0" prefWidth="128.0" text="Количество шагов по z" textFill="WHITE">
+                     <font>
+                        <Font name="Times New Roman Bold" size="12.0" />
+                     </font></Label>
+                  <Label prefHeight="17.0" prefWidth="155.0" text="Фиксируемая переменная" textFill="WHITE">
+                     <font>
+                        <Font name="Times New Roman Bold" size="12.0" />
+                     </font></Label>
+                  <Label prefHeight="17.0" prefWidth="155.0" text="Фиксированные значения" textFill="WHITE">
+                     <font>
+                        <Font name="Times New Roman Bold" size="12.0" />
+                     </font></Label>
                </children>
             </VBox>
             <VBox prefHeight="132.0" prefWidth="148.0" spacing="10.0">
@@ -48,8 +73,14 @@
                   <TextField fx:id="textFieldStepZ" />
                   <HBox prefHeight="27.0" prefWidth="81.0" spacing="10.0">
                      <children>
-                        <RadioButton fx:id="radioButtonZ" mnemonicParsing="false" selected="true" text="z" />
-                        <RadioButton fx:id="radioButtonR" mnemonicParsing="false" text="r" />
+                        <RadioButton fx:id="radioButtonZ" mnemonicParsing="false" selected="true" text="z" textFill="WHITE">
+                           <font>
+                              <Font name="Times New Roman Bold" size="12.0" />
+                           </font></RadioButton>
+                        <RadioButton fx:id="radioButtonR" mnemonicParsing="false" text="r" textFill="WHITE">
+                           <font>
+                              <Font name="Times New Roman Bold" size="12.0" />
+                           </font></RadioButton>
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -62,9 +93,18 @@
       </HBox>
       <HBox layoutX="176.0" layoutY="174.0" prefHeight="35.0" prefWidth="265.0" spacing="5.0">
          <children>
-            <Label prefHeight="17.0" prefWidth="52.0" text="Схема" />
-            <RadioButton fx:id="radioButtonCN" mnemonicParsing="false" prefHeight="17.0" prefWidth="134.0" selected="true" text="Кранка-Николсона" />
-            <RadioButton fx:id="radioButtonImplicit" mnemonicParsing="false" prefHeight="17.0" prefWidth="80.0" text="Неявная " />
+            <Label prefHeight="17.0" prefWidth="52.0" text="Схема" textFill="WHITE">
+               <font>
+                  <Font name="Times New Roman Bold" size="12.0" />
+               </font></Label>
+            <RadioButton fx:id="radioButtonCN" mnemonicParsing="false" prefHeight="17.0" prefWidth="134.0" selected="true" text="Кранка-Николсона" textFill="WHITE">
+               <font>
+                  <Font name="Times New Roman Bold" size="12.0" />
+               </font></RadioButton>
+            <RadioButton fx:id="radioButtonImplicit" mnemonicParsing="false" prefHeight="17.0" prefWidth="80.0" text="Неявная " textFill="WHITE">
+               <font>
+                  <Font name="Times New Roman Bold" size="12.0" />
+               </font></RadioButton>
          </children>
       </HBox>
    </children>

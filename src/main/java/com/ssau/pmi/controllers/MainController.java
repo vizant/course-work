@@ -9,6 +9,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
 
+    @FXML
+    public AnchorPane mainPane;
     @FXML
     private TextField textFieldR;
     @FXML
@@ -44,6 +48,15 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Image image = new Image("images/background.jpg");
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT, BackgroundPosition.CENTER,
+                new BackgroundSize(1000, 600, true, true, true, true));
+        Background background = new Background(backgroundImage);
+        mainPane.setBackground(
+                background
+        );
+
         ToggleGroup toggleGroupForRZ = new ToggleGroup();
         radioButtonZ.setToggleGroup(toggleGroupForRZ);
         radioButtonR.setToggleGroup(toggleGroupForRZ);
