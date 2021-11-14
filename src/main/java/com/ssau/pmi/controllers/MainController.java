@@ -92,10 +92,10 @@ public class MainController implements Initializable {
                             .schemeType(getSelectedSchemeType())
                             .build();
 
-            if (schemeParameters.getR() < 0 || schemeParameters.getR() > 4)
+            if (schemeParameters.getR() < 0)
                 throw new ValidateParametersException();
 
-            if (schemeParameters.getL() < 0 || schemeParameters.getL() > 10)
+            if (schemeParameters.getL() < 0)
                 throw new ValidateParametersException();
 
             if (schemeParameters.getN() <= 0)
@@ -115,9 +115,9 @@ public class MainController implements Initializable {
 
             Predicate<Double> predicate = x -> x < 0;
             if (schemeParameters.getVariable() == Variable.Z)
-                predicate = predicate.or(x -> x > 10);
+                predicate = predicate.or(x -> x > schemeParameters.getL());
             else
-                predicate = predicate.or(x -> x > 4);
+                predicate = predicate.or(x -> x > schemeParameters.getR());
 
             for (Double fixedValue : schemeParameters.getFixedValues()) {
                 if (predicate.test(fixedValue)) {
@@ -132,9 +132,9 @@ public class MainController implements Initializable {
     }
 
     private void buildScheme(SchemeParameters schemeParameters) {
-        var ex = new GraphicBuilder(schemeParameters);
-        ex.initUI();
-        ex.setVisible(true);
+        var graphicBuilder = new GraphicBuilder(schemeParameters);
+        graphicBuilder.initUI();
+        graphicBuilder.setVisible(true);
     }
 
     private void showAlertWithError() {

@@ -18,6 +18,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Locale;
 import java.util.function.Function;
 
 public class GraphicBuilder extends JFrame {
@@ -82,13 +83,13 @@ public class GraphicBuilder extends JFrame {
             h = scheme.getH_r();
             getSchemeLine = resultMatrix::getColumn;
             getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_z());
-            getSeriesLabel = (x) -> (Variable.Z.name() + Constants.SPACE + Constants.EQUAL
+            getSeriesLabel = (x) -> (Variable.Z.name().toLowerCase() + Constants.SPACE + Constants.EQUAL
                     + Constants.SPACE + schemeParameters.getFixedValues().get(x));
         } else {
             h = scheme.getH_z();
             getSchemeLine = resultMatrix::getRow;
             getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_r());
-            getSeriesLabel = (x) -> (Variable.R.name() + Constants.SPACE + Constants.EQUAL
+            getSeriesLabel = (x) -> (Variable.R.name().toLowerCase() + Constants.SPACE + Constants.EQUAL
                     + Constants.SPACE + schemeParameters.getFixedValues().get(x));
         }
 
