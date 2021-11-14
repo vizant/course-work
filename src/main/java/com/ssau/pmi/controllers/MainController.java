@@ -79,8 +79,6 @@ public class MainController implements Initializable {
                     .distinct()
                     .collect(Collectors.toList());
 
-            fixedValues.forEach(System.out::println);
-
             schemeParameters =
                     SchemeParameters.builder()
                             .R(Double.parseDouble(inputFieldR))

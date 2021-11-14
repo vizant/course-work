@@ -3,7 +3,6 @@ package com.ssau.pmi.utils;
 public class Constants {
 
     public static final String CHMMF_COURSE = "\u0427\u041C\u041C\u0424 \u043A\u0443\u0440\u0441\u043E\u0432\u0430\u044F";
-    public static final String VALUE = "\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435";
     public static final String SPACE = " ";
     public static final String EQUAL = "=";
     public static final String PARAMETERS_INFO_CN = "\u0413\u0440\u0430\u0444\u0438\u043A \u043F\u0440\u0438 "
