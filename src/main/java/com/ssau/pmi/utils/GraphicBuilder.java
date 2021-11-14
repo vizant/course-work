@@ -20,12 +20,16 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Locale;
 
 public class GraphicBuilder extends JFrame {
     private SchemeParameters schemeParameters;
 
+    private Font mainFont;
+
     public GraphicBuilder(SchemeParameters schemeParameters) {
         this.schemeParameters = schemeParameters;
+        this.mainFont = new Font("Arial Unicode MS", Font.BOLD, 18);
     }
 
     public void initUI() {
@@ -37,10 +41,10 @@ public class GraphicBuilder extends JFrame {
         add(chartPanel);
 
         pack();
-        setTitle("ЧММФ курсовая");
+        setTitle(Constants.CHMMF_COURSE);
         setLocationRelativeTo(null);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private XYDataset createDataset() {
@@ -85,7 +89,8 @@ public class GraphicBuilder extends JFrame {
                 localArray = resultMatrix.getRow(layer + 1);
             }
 
-            var series = new XYSeries("значение = " + schemeParameters.getFixedValues().get(i));
+            var series = new XYSeries(Constants.VALUE + Constants.SPACE
+                    + Constants.EQUAL + Constants.SPACE + schemeParameters.getFixedValues().get(i));
 
             for (int j = 0; j < localArray.length; j++) {
                 series.add(j * h, localArray[j]);
@@ -98,14 +103,24 @@ public class GraphicBuilder extends JFrame {
 
     private JFreeChart createChart(XYDataset dataset) {
 
-        String tittle = String.format("График(и) I = %d, J = %d при фиксированном %s, схема %s",
-                schemeParameters.getStepR(),
-                schemeParameters.getStepZ(),
-                schemeParameters.getVariable().name(),
-                schemeParameters.getSchemeType().name());
+        String title = null;
+
+        if (schemeParameters.getSchemeType().equals(SchemeType.CN)) {
+            title = String.format(Constants.PARAMETERS_INFO_CN,
+                    schemeParameters.getStepR(),
+                    schemeParameters.getStepZ(),
+                    schemeParameters.getVariable().name().toLowerCase(),
+                    Constants.FOR_CN);
+        } else {
+            title = String.format(Constants.PARAMETERS_INFO_IMPLICIT,
+                    schemeParameters.getStepR(),
+                    schemeParameters.getStepZ(),
+                    schemeParameters.getVariable().name().toLowerCase(),
+                    Constants.FOR_IMPLICIT);
+        }
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                tittle,
+                title,
                 schemeParameters.getVariable() == Variable.Z ? "r" : "z",
                 "|U(r,z)|",
                 dataset,
@@ -144,10 +159,7 @@ public class GraphicBuilder extends JFrame {
         plot.setDomainGridlinePaint(Color.BLACK);
 
         chart.getLegend().setFrame(BlockBorder.NONE);
-        chart.setTitle(new TextTitle(tittle,
-                        new Font("Serif", Font.BOLD, 18)
-                )
-        );
+        chart.setTitle(new TextTitle(title, mainFont));
 
         return chart;
     }
