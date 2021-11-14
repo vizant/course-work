@@ -47,7 +47,6 @@ public class ComplexMatrix {
     }
 
     public double[] getColumn(int column) {
-        Arrays.stream(elements).map(array -> array[column - 1]).forEach(el -> System.out.println(el.getImaginary() + " i" + el.getReal()));
         return Arrays.stream(elements).mapToDouble(array -> array[column - 1].abs()).toArray();
     }
 

@@ -1,5 +1,6 @@
 package com.ssau.pmi;
 
+import com.ssau.pmi.utils.Constants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +18,7 @@ public class MainClass extends Application {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass()
                 .getResource("/pages/MainPage.fxml")));
         Scene scene = new Scene(root);
-        stage.setTitle("Course work");
+        stage.setTitle(Constants.CHMMF_COURSE);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
