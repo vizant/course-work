@@ -21,6 +21,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Locale;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public class GraphicBuilder extends JFrame {
     private SchemeParameters schemeParameters;
@@ -48,7 +51,7 @@ public class GraphicBuilder extends JFrame {
     }
 
     private XYDataset createDataset() {
-        AbstractScheme scheme = null;
+        AbstractScheme scheme;
 
         if (schemeParameters.getSchemeType() == SchemeType.CN) {
             scheme = new SchemeCN(
@@ -74,23 +77,32 @@ public class GraphicBuilder extends JFrame {
 
         var dataset = new XYSeriesCollection();
 
+
+        Function<Integer, double[]> getSchemeLine;
+        Function<Integer, Integer> getSchemeLayer;
+        Function<Integer, String> getSeriesLabel;
+        final double h;
+        AbstractScheme finalScheme = scheme;
+        if (schemeParameters.getVariable() == Variable.Z) {
+            h = scheme.getH_r();
+            getSchemeLine = resultMatrix::getColumn;
+            getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_z());
+            getSeriesLabel = (x) -> (Variable.Z.name()+ Constants.SPACE + Constants.EQUAL
+                    + Constants.SPACE + schemeParameters.getFixedValues().get(x));
+        } else {
+            h = scheme.getH_z();
+            getSchemeLine = resultMatrix::getRow;
+            getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_r());
+            getSeriesLabel = (x) -> (Variable.R.name()+ Constants.SPACE + Constants.EQUAL
+                    + Constants.SPACE + schemeParameters.getFixedValues().get(x));
+        }
+
         for (int i = 0; i < schemeParameters.getFixedValues().size(); i++) {
-            double[] localArray = null;
-            double h;
-            int layer;
 
-            if (schemeParameters.getVariable() == Variable.Z) {
-                h = scheme.getH_r();
-                layer = (int) (schemeParameters.getFixedValues().get(i) / scheme.getH_z());
-                localArray = resultMatrix.getColumn(layer + 1);
-            } else {
-                h = scheme.getH_z();
-                layer = (int) (schemeParameters.getFixedValues().get(i) / scheme.getH_r());
-                localArray = resultMatrix.getRow(layer + 1);
-            }
+            int layer = getSchemeLayer.apply(i);
+            double[] localArray = getSchemeLine.apply(layer + 1);
 
-            var series = new XYSeries(Constants.VALUE + Constants.SPACE
-                    + Constants.EQUAL + Constants.SPACE + schemeParameters.getFixedValues().get(i));
+            var series = new XYSeries(getSeriesLabel.apply(i));
 
             for (int j = 0; j < localArray.length; j++) {
                 series.add(j * h, localArray[j]);
