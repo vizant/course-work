@@ -1,7 +1,6 @@
 package com.ssau.pmi.schemes;
 
 import com.ssau.pmi.complex.ComplexMatrix;
-import com.ssau.pmi.utils.Variable;
 
 public abstract class AbstractScheme {
     protected double L;

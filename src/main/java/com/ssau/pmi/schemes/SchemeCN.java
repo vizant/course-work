@@ -1,7 +1,6 @@
 package com.ssau.pmi.schemes;
 
 import com.ssau.pmi.complex.ComplexMatrix;
-import com.ssau.pmi.utils.Variable;
 import org.apache.commons.math3.complex.Complex;
 
 public class SchemeCN extends AbstractScheme {

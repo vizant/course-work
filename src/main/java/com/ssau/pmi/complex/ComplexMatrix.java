@@ -2,9 +2,7 @@ package com.ssau.pmi.complex;
 
 import org.apache.commons.math3.complex.Complex;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ComplexMatrix {
     private final int rows;
@@ -53,9 +51,9 @@ public class ComplexMatrix {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < elements.length; i++) {
+        for (Complex[] element : elements) {
             for (int j = 0; j < elements[0].length; j++) {
-                Complex complex = elements[i][j];
+                Complex complex = element[j];
                 result.append(String.format("%.2f %.2fi  ", complex.getReal(), complex.getImaginary()));
             }
             result.append("\n");

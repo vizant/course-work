@@ -7,12 +7,10 @@ import com.ssau.pmi.schemes.SchemeImplicit;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -20,10 +18,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Locale;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 public class GraphicBuilder extends JFrame {
     private SchemeParameters schemeParameters;
@@ -87,13 +82,13 @@ public class GraphicBuilder extends JFrame {
             h = scheme.getH_r();
             getSchemeLine = resultMatrix::getColumn;
             getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_z());
-            getSeriesLabel = (x) -> (Variable.Z.name()+ Constants.SPACE + Constants.EQUAL
+            getSeriesLabel = (x) -> (Variable.Z.name() + Constants.SPACE + Constants.EQUAL
                     + Constants.SPACE + schemeParameters.getFixedValues().get(x));
         } else {
             h = scheme.getH_z();
             getSchemeLine = resultMatrix::getRow;
             getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_r());
-            getSeriesLabel = (x) -> (Variable.R.name()+ Constants.SPACE + Constants.EQUAL
+            getSeriesLabel = (x) -> (Variable.R.name() + Constants.SPACE + Constants.EQUAL
                     + Constants.SPACE + schemeParameters.getFixedValues().get(x));
         }
 
@@ -115,7 +110,7 @@ public class GraphicBuilder extends JFrame {
 
     private JFreeChart createChart(XYDataset dataset) {
 
-        String title = null;
+        String title;
 
         if (schemeParameters.getSchemeType().equals(SchemeType.CN)) {
             title = String.format(Constants.PARAMETERS_INFO_CN,

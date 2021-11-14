@@ -1,16 +1,14 @@
 package com.ssau.pmi.controllers;
 
 import com.ssau.pmi.exceptions.ValidateParametersException;
-import com.ssau.pmi.utils.Constants;
-import com.ssau.pmi.utils.GraphicBuilder;
-import com.ssau.pmi.utils.SchemeParameters;
-import com.ssau.pmi.utils.SchemeType;
-import com.ssau.pmi.utils.Variable;
+import com.ssau.pmi.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import org.apache.commons.math3.analysis.function.Constant;
+import javafx.scene.control.Alert;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -66,7 +64,7 @@ public class MainController implements Initializable {
     }
 
     private SchemeParameters validateParameters() throws ValidateParametersException {
-        SchemeParameters schemeParameters = null;
+        SchemeParameters schemeParameters;
         try {
             String inputFieldR = textFieldR.getText();
             String inputFieldL = textFieldL.getText();
