@@ -7,43 +7,65 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="629.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ssau.pmi.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="265.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ssau.pmi.controllers.MainController">
    <children>
-      <TextField fx:id="textFieldR" layoutX="87.0" layoutY="36.0" text="4" />
-      <TextField fx:id="textFieldL" layoutX="87.0" layoutY="73.0" text="10" />
-      <TextField fx:id="textFieldN" layoutX="87.0" layoutY="110.0" text="1.7" />
-      <TextField fx:id="textFieldLambda" layoutX="87.0" layoutY="153.0" text="2" />
-      <Label layoutX="35.0" layoutY="40.0" text="R" />
-      <Label layoutX="35.0" layoutY="77.0" prefHeight="17.0" prefWidth="8.0" text="L" />
-      <Label layoutX="35.0" layoutY="114.0" text="n" />
-      <Label layoutX="35.0" layoutY="157.0" text="lambda" />
-      <TextField fx:id="textFieldStepR" layoutX="460.0" layoutY="36.0" />
-      <TextField fx:id="textFieldStepZ" layoutX="460.0" layoutY="73.0" />
-      <TextField fx:id="textFieldFixedValue" layoutX="460.0" layoutY="153.0" />
-      <Label layoutX="308.0" layoutY="40.0" prefHeight="17.0" prefWidth="179.0" text="Количество шагов по r" />
-      <Label layoutX="308.0" layoutY="77.0" prefHeight="17.0" prefWidth="128.0" text="Количество шагов по z" />
-      <Label layoutX="308.0" layoutY="157.0" prefHeight="17.0" prefWidth="155.0" text="Фиксированные значения" />
-      <HBox layoutX="460.0" layoutY="105.0" prefHeight="27.0" prefWidth="81.0" spacing="10.0">
+      <Button fx:id="btnBuild" layoutX="240.0" layoutY="214.0" mnemonicParsing="false" onAction="#buildButtonOnAction" text="Построить график" />
+      <HBox layoutX="24.0" layoutY="27.0" prefHeight="132.0" prefWidth="225.0" spacing="20.0">
          <children>
-            <RadioButton fx:id="radioButtonZ" mnemonicParsing="false" selected="true" text="z" />
-            <RadioButton fx:id="radioButtonR" mnemonicParsing="false" text="r" />
+            <VBox alignment="CENTER_RIGHT" prefHeight="130.0" prefWidth="52.0" spacing="20.0">
+               <children>
+                  <Label text="R" />
+                  <Label prefHeight="17.0" prefWidth="8.0" text="L" />
+                  <Label text="n" />
+                  <Label text="λ" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                  <TextField fx:id="textFieldR" text="4" />
+                  <TextField fx:id="textFieldL" text="10" />
+                  <TextField fx:id="textFieldN" text="1.7" />
+                  <TextField fx:id="textFieldLambda" text="2" />
+               </children>
+            </VBox>
          </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
       </HBox>
-      <Label layoutX="308.0" layoutY="110.0" prefHeight="17.0" prefWidth="137.0" text="Const" />
-      <Label layoutX="168.0" layoutY="198.0" prefHeight="17.0" prefWidth="137.0" text="Схема" />
-      <HBox layoutX="230.0" layoutY="193.0" prefHeight="27.0" prefWidth="234.0" spacing="10.0">
+      <HBox layoutX="237.0" layoutY="27.0" prefHeight="132.0" prefWidth="322.0">
          <children>
-            <RadioButton fx:id="radioButtonCN" mnemonicParsing="false" selected="true" text="Кранка-Николсона" />
+            <VBox prefHeight="132.0" prefWidth="162.0" spacing="20.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="179.0" text="Количество шагов по r" />
+                  <Label prefHeight="17.0" prefWidth="128.0" text="Количество шагов по z" />
+                  <Label prefHeight="17.0" prefWidth="155.0" text="Фиксируемая переменная" />
+                  <Label prefHeight="17.0" prefWidth="155.0" text="Фиксированные значения" />
+               </children>
+            </VBox>
+            <VBox prefHeight="132.0" prefWidth="148.0" spacing="10.0">
+               <children>
+                  <TextField fx:id="textFieldStepR" />
+                  <TextField fx:id="textFieldStepZ" />
+                  <HBox prefHeight="27.0" prefWidth="81.0" spacing="10.0">
+                     <children>
+                        <RadioButton fx:id="radioButtonZ" mnemonicParsing="false" selected="true" text="z" />
+                        <RadioButton fx:id="radioButtonR" mnemonicParsing="false" text="r" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <TextField fx:id="textFieldFixedValue" promptText="введите через пробел" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="176.0" layoutY="174.0" prefHeight="35.0" prefWidth="265.0" spacing="5.0">
+         <children>
+            <Label prefHeight="17.0" prefWidth="52.0" text="Схема" />
+            <RadioButton fx:id="radioButtonCN" mnemonicParsing="false" prefHeight="17.0" prefWidth="134.0" selected="true" text="Кранка-Николсона" />
             <RadioButton fx:id="radioButtonImplicit" mnemonicParsing="false" prefHeight="17.0" prefWidth="80.0" text="Неявная " />
          </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
       </HBox>
-      <Button fx:id="btnBuild" layoutX="250.0" layoutY="232.0" mnemonicParsing="false" onAction="#buildButtonOnAction" text="Построить график" />
    </children>
 </AnchorPane>
