@@ -1,7 +1,7 @@
 package com.ssau.pmi.controllers;
 
-import com.ssau.pmi.LineChartEx;
 import com.ssau.pmi.exceptions.ValidateParametersException;
+import com.ssau.pmi.utils.Constants;
 import com.ssau.pmi.utils.GraphicBuilder;
 import com.ssau.pmi.utils.SchemeParameters;
 import com.ssau.pmi.utils.SchemeType;
@@ -10,11 +10,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import org.apache.commons.math3.analysis.function.Constant;
 
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -130,7 +130,6 @@ public class MainController implements Initializable {
             }
 
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             throw new ValidateParametersException();
         }
         return schemeParameters;
@@ -138,16 +137,15 @@ public class MainController implements Initializable {
 
     private void buildScheme(SchemeParameters schemeParameters) {
         var ex = new GraphicBuilder(schemeParameters);
-        ex.setLocale(new Locale("russian"));
         ex.initUI();
         ex.setVisible(true);
     }
 
     private void showAlertWithError() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Validate parameters error!");
-        alert.setHeaderText("Error");
-        alert.setContentText("Incorrect parameters!");
+        alert.setTitle(Constants.VALIDATION_ERROR);
+        alert.setHeaderText(Constants.ERROR);
+        alert.setContentText(Constants.INCORRECT_PARAMETERS_VALUES);
         alert.showAndWait();
     }
 
