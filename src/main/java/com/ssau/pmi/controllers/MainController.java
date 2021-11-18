@@ -48,7 +48,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Image image = new Image("images/background.jpg");
+        Image image = new Image("images/gradient.jpeg");
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
                 BackgroundRepeat.REPEAT, BackgroundPosition.CENTER,
                 new BackgroundSize(1000, 600, true, true, true, true));
