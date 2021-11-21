@@ -18,7 +18,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Locale;
 import java.util.function.Function;
 
 public class GraphicBuilder extends JFrame {
@@ -139,16 +138,16 @@ public class GraphicBuilder extends JFrame {
         );
 
         final Paint[] colors = new Paint[]{
-                Color.magenta,
-                Color.blue,
-                Color.green,
-                Color.black,
-                Color.orange,
-                Color.red,
-                Color.cyan,
-                Color.pink,
-                Color.gray,
-                Color.yellow
+                new Color(255, 0, 0),
+                new Color(255, 128, 0),
+                new Color(255, 255, 0),
+                new Color(128, 255, 0),
+                new Color(0, 255, 0),
+                new Color(0, 255, 255),
+                new Color(0, 0, 255),
+                new Color(64, 0, 255),
+                new Color(128, 0, 255),
+                new Color(255, 0, 191)
         };
 
         var renderer = new XYLineAndShapeRenderer();

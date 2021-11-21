@@ -71,13 +71,14 @@ public class MainController implements Initializable {
         try {
             SchemeParameters schemeParameters = validateParameters();
             buildScheme(schemeParameters);
-        } catch (ValidateParametersException e) {
-            showAlertWithError();
+        } catch (ValidateParametersException ignored) {
         }
     }
 
     private SchemeParameters validateParameters() throws ValidateParametersException {
         SchemeParameters schemeParameters;
+        boolean isValidParameters = true;
+        StringBuilder errorMessage = new StringBuilder();
         try {
             String inputFieldR = textFieldR.getText();
             String inputFieldL = textFieldL.getText();
@@ -105,40 +106,80 @@ public class MainController implements Initializable {
                             .schemeType(getSelectedSchemeType())
                             .build();
 
-            if (schemeParameters.getR() < 0)
-                throw new ValidateParametersException();
+            if (schemeParameters.getR() <= 0) {
+                isValidParameters = false;
+                String msg = "Параметр R должен быть больше 0\n";
+                errorMessage.append(msg);
+            }
 
-            if (schemeParameters.getL() < 0)
-                throw new ValidateParametersException();
+            if (schemeParameters.getL() <= 0) {
+                isValidParameters = false;
+                String msg = "Параметр L должен быть больше 0\n";
+                errorMessage.append(msg);
+            }
 
-            if (schemeParameters.getN() <= 0)
-                throw new ValidateParametersException();
+            if (schemeParameters.getN() <= 0) {
+                isValidParameters = false;
+                String msg = "Параметр n должен быть больше 0\n";
+                errorMessage.append(msg);
+            }
 
-            if (schemeParameters.getLambda() <= 0)
-                throw new ValidateParametersException();
+            if (schemeParameters.getLambda() <= 0) {
+                isValidParameters = false;
+                String msg = "Параметр λ должен быть больше или равен 0\n";
+                errorMessage.append(msg);
+            }
 
-            if (schemeParameters.getStepR() <= 0)
-                throw new ValidateParametersException();
+            if (schemeParameters.getStepR() <= 0) {
+                isValidParameters = false;
+                String msg = "Некорректный шаг по r\n";
+                errorMessage.append(msg);
+            }
 
-            if (schemeParameters.getStepZ() <= 0)
-                throw new ValidateParametersException();
+            if (schemeParameters.getStepZ() <= 0) {
+                isValidParameters = false;
+                String msg = "Некорректный шаг по z\n";
+                errorMessage.append(msg);
+            }
 
-            if (schemeParameters.getFixedValues().size() > 10 || schemeParameters.getFixedValues().isEmpty())
+            if(!isValidParameters) {
+                showAlertWithError(errorMessage.toString());
                 throw new ValidateParametersException();
+            }
+
+            if (schemeParameters.getFixedValues().size() > 10 || schemeParameters.getFixedValues().isEmpty()) {
+                isValidParameters = false;
+                String msg = "Количество фиксируемых значений не должно превышать 10\n";
+                errorMessage.append(msg);
+            }
 
             Predicate<Double> predicate = x -> x < 0;
-            if (schemeParameters.getVariable() == Variable.Z)
-                predicate = predicate.or(x -> x > schemeParameters.getL());
-            else
-                predicate = predicate.or(x -> x > schemeParameters.getR());
+            SchemeParameters finalSchemeParameters = schemeParameters;
+            if (schemeParameters.getVariable() == Variable.Z) {
+                predicate = predicate.or(x -> x > finalSchemeParameters.getL());
+            }
+            else {
+                predicate = predicate.or(x -> x > finalSchemeParameters.getR());
+            }
 
             for (Double fixedValue : schemeParameters.getFixedValues()) {
                 if (predicate.test(fixedValue)) {
-                    throw new ValidateParametersException();
+                    isValidParameters = false;
+                    String msg = "Некорректное фиксируемое значение\n";
+                    errorMessage.append(msg);
+                    break;
                 }
             }
 
+            if(!isValidParameters) {
+                showAlertWithError(errorMessage.toString());
+                throw new ValidateParametersException();
+            }
+
         } catch (NumberFormatException e) {
+            String msg = "Введены некорректные данные\n";
+            errorMessage.append(msg);
+            showAlertWithError(errorMessage.toString());
             throw new ValidateParametersException();
         }
         return schemeParameters;
@@ -150,11 +191,11 @@ public class MainController implements Initializable {
         graphicBuilder.setVisible(true);
     }
 
-    private void showAlertWithError() {
+    private void showAlertWithError(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(Constants.VALIDATION_ERROR);
         alert.setHeaderText(Constants.ERROR);
-        alert.setContentText(Constants.INCORRECT_PARAMETERS_VALUES);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 
