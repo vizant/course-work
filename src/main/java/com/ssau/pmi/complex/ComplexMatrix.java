@@ -2,9 +2,10 @@ package com.ssau.pmi.complex;
 
 import org.apache.commons.math3.complex.Complex;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class ComplexMatrix {
+public class ComplexMatrix implements Serializable {
     private final int rows;
     private final int columns;
     private final Complex[][] elements;

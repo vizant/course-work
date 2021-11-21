@@ -4,6 +4,7 @@ import com.ssau.pmi.complex.ComplexMatrix;
 import com.ssau.pmi.schemes.AbstractScheme;
 import com.ssau.pmi.schemes.SchemeCN;
 import com.ssau.pmi.schemes.SchemeImplicit;
+import org.apache.commons.math3.complex.Complex;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -18,12 +19,14 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.util.Arrays;
 import java.util.function.Function;
 
 public class GraphicBuilder extends JFrame {
     private SchemeParameters schemeParameters;
-
     private Font mainFont;
+    private AbstractScheme scheme;
 
     public GraphicBuilder(SchemeParameters schemeParameters) {
         this.schemeParameters = schemeParameters;
@@ -37,16 +40,13 @@ public class GraphicBuilder extends JFrame {
         chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         chartPanel.setBackground(Color.white);
         add(chartPanel);
-
         pack();
         setTitle(Constants.CHMMF_COURSE);
         setLocationRelativeTo(null);
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private XYDataset createDataset() {
-        AbstractScheme scheme;
 
         if (schemeParameters.getSchemeType() == SchemeType.CN) {
             scheme = new SchemeCN(
@@ -69,9 +69,8 @@ public class GraphicBuilder extends JFrame {
         }
 
         ComplexMatrix resultMatrix = scheme.calculateResultMatrix();
-
+        printErrorsForCurrentScheme(1, 4, resultMatrix);
         var dataset = new XYSeriesCollection();
-
 
         Function<Integer, double[]> getSchemeLine;
         Function<Integer, Integer> getSchemeLayer;
@@ -170,4 +169,92 @@ public class GraphicBuilder extends JFrame {
 
         return chart;
     }
+
+    private void printErrorsForCurrentScheme(double r, double z, ComplexMatrix resultMatrix) {
+        int I = 10000;
+        int J = 10000;
+        AbstractScheme idealScheme = createIdealScheme(I,J);
+        int[] idealLayers = idealScheme.getSchemeLayersPoint(r, z);
+        ComplexMatrix idealComplexMatrix = CalculatedComplexMatrix.createComplexMatrix(schemeParameters, idealScheme);
+        Complex idealComplex = idealComplexMatrix.get(idealLayers[0] + 1, idealLayers[1] + 1);
+
+        int[] layersPoint = scheme.getSchemeLayersPoint(r, z);
+        Complex complex = resultMatrix.get(layersPoint[0] + 1, layersPoint[1] + 1);
+        double error = idealComplex.subtract(complex).abs();
+        System.out.println("error = " + error);
+
+        AbstractScheme doubleScheme;
+        if (schemeParameters.getSchemeType() == SchemeType.CN)
+            doubleScheme = createIdealScheme(schemeParameters.getStepR() * 2, schemeParameters.getStepZ() * 2);
+        else
+            doubleScheme = createIdealScheme(schemeParameters.getStepR() * 2, schemeParameters.getStepZ() * 4);
+
+        int[] doubleSchemeLayersPoint = doubleScheme.getSchemeLayersPoint(r, z);
+        ComplexMatrix doubleComplexMatrix = doubleScheme.calculateResultMatrix();
+        Complex doubleComplex = doubleComplexMatrix.get(doubleSchemeLayersPoint[0] + 1, doubleSchemeLayersPoint[1] + 1);
+        double doubleError = idealComplex.subtract(doubleComplex).abs();
+        System.out.println("double error = " + doubleError);
+
+        System.out.println("result = " + error / doubleError + "\n\n");
+    }
+
+    private AbstractScheme createIdealScheme(int I, int J) {
+        AbstractScheme scheme;
+
+        if (schemeParameters.getSchemeType() == SchemeType.CN) {
+            scheme = new SchemeCN(
+                    schemeParameters.getR(),
+                    schemeParameters.getL(),
+                    schemeParameters.getLambda(),
+                    schemeParameters.getN(),
+                    I,
+                    J
+            );
+        } else {
+            scheme = new SchemeImplicit(
+                    schemeParameters.getR(),
+                    schemeParameters.getL(),
+                    schemeParameters.getLambda(),
+                    schemeParameters.getN(),
+                    I,
+                    J
+            );
+        }
+
+        return scheme;
+    }
+
+//    private ComplexMatrix getIdealComplexMatrix(int I, int J) {
+//        ComplexMatrix idealComplexMatrix = null;
+//        String fileName;
+//
+//        if (schemeParameters.getSchemeType() == SchemeType.CN) {
+//            fileName = I + " " + J + " idealSchemeCN.ser";
+//        } else {
+//            fileName = I + " " + J + " idealSchemeImplicit.ser";
+//        }
+//        File file = new File(fileName);
+//        System.out.println(file.exists());
+//
+//        if (!file.exists()) {
+//            try (FileOutputStream outputStream = new FileOutputStream(fileName);
+//                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+//                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream)) {
+//                AbstractScheme idealScheme = createIdealScheme(10000, 10000);
+//                idealComplexMatrix = idealScheme.calculateResultMatrix();
+//                objectOutputStream.writeObject(idealComplexMatrix);
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+//        } else {
+//            try (FileInputStream inputStream = new FileInputStream(fileName);
+//                 BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+//                 ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream)) {
+//                idealComplexMatrix = (ComplexMatrix) objectInputStream.readObject();
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+//        }
+//        return idealComplexMatrix;
+//    }
 }

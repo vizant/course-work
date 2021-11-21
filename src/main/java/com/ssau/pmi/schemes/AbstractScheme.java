@@ -32,4 +32,10 @@ public abstract class AbstractScheme {
     public double getH_r() {
         return h_r;
     }
+
+    public int[] getSchemeLayersPoint(double r, double z) {
+        int rLayer = (int) (r / h_r);
+        int zLayer = (int) (z / h_z);
+        return new int[]{rLayer, zLayer};
+    }
 }
