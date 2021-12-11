@@ -69,7 +69,7 @@ public class GraphicBuilder extends JFrame {
         }
 
         ComplexMatrix resultMatrix = scheme.calculateResultMatrix();
-        printErrorsForCurrentScheme(1, 4, resultMatrix);
+        printErrorsForCurrentScheme(1, 4);
         var dataset = new XYSeriesCollection();
 
         Function<Integer, double[]> getSchemeLine;
@@ -170,35 +170,32 @@ public class GraphicBuilder extends JFrame {
         return chart;
     }
 
-    private void printErrorsForCurrentScheme(double r, double z, ComplexMatrix resultMatrix) {
-        int I = 10000;
-        int J = 10000;
-        AbstractScheme idealScheme = createIdealScheme(I,J);
-        int[] idealLayers = idealScheme.getSchemeLayersPoint(r, z);
-        ComplexMatrix idealComplexMatrix = CalculatedComplexMatrix.createComplexMatrix(schemeParameters, idealScheme);
-        Complex idealComplex = idealComplexMatrix.get(idealLayers[0] + 1, idealLayers[1] + 1);
+    private void printErrorsForCurrentScheme(double r, double z) {
+        AbstractScheme firstScheme = createIdealScheme(schemeParameters.getStepR(), schemeParameters.getStepZ());
+        int[] firstLayers = firstScheme.getSchemeLayersPoint(r, z);
+        ComplexMatrix firstComplexMatrix = firstScheme.calculateResultMatrix();
+        Complex firstComplex = firstComplexMatrix.get(firstLayers[0] + 1, firstLayers[1] + 1);
 
-        int[] layersPoint = scheme.getSchemeLayersPoint(r, z);
-        Complex complex = resultMatrix.get(layersPoint[0] + 1, layersPoint[1] + 1);
-        double error = idealComplex.subtract(complex).abs();
-        System.out.println("error = " + error);
+        AbstractScheme secondScheme = createIdealScheme(schemeParameters.getStepR(), schemeParameters.getStepZ() * 2);
+        int[] secondLayers = secondScheme.getSchemeLayersPoint(r, z);
+        ComplexMatrix secondComplexMatrix = secondScheme.calculateResultMatrix();
+        Complex secondComplex = secondComplexMatrix.get(secondLayers[0] + 1, secondLayers[1] + 1);
 
-        AbstractScheme doubleScheme;
-        if (schemeParameters.getSchemeType() == SchemeType.CN)
-            doubleScheme = createIdealScheme(schemeParameters.getStepR() * 2, schemeParameters.getStepZ() * 2);
-        else
-            doubleScheme = createIdealScheme(schemeParameters.getStepR() * 2, schemeParameters.getStepZ() * 4);
+        double firstError = firstComplex.subtract(secondComplex).abs();
+        System.out.println("first  error = " + firstError);
 
-        int[] doubleSchemeLayersPoint = doubleScheme.getSchemeLayersPoint(r, z);
-        ComplexMatrix doubleComplexMatrix = doubleScheme.calculateResultMatrix();
-        Complex doubleComplex = doubleComplexMatrix.get(doubleSchemeLayersPoint[0] + 1, doubleSchemeLayersPoint[1] + 1);
-        double doubleError = idealComplex.subtract(doubleComplex).abs();
-        System.out.println("double error = " + doubleError);
+        AbstractScheme thirdScheme = createIdealScheme(schemeParameters.getStepR(), schemeParameters.getStepZ() * 4);
+        int[] thirdLayers = thirdScheme.getSchemeLayersPoint(r, z);
+        ComplexMatrix thirdComplexMatrix = thirdScheme.calculateResultMatrix();
+        Complex thirdComplex = thirdComplexMatrix.get(thirdLayers[0] + 1, thirdLayers[1] + 1);
 
-        System.out.println("result = " + error / doubleError + "\n\n");
+        double secondError = thirdComplex.subtract(secondComplex).abs();
+        System.out.println("second error = " + secondError);
+
+        System.out.println("result = " + firstError / secondError + "\n\n");
     }
 
-    private AbstractScheme createIdealScheme(int I, int J) {
+    private AbstractScheme createIdealScheme(int stepsI, int stepsJ) {
         AbstractScheme scheme;
 
         if (schemeParameters.getSchemeType() == SchemeType.CN) {
@@ -207,8 +204,8 @@ public class GraphicBuilder extends JFrame {
                     schemeParameters.getL(),
                     schemeParameters.getLambda(),
                     schemeParameters.getN(),
-                    I,
-                    J
+                    stepsI,
+                    stepsJ
             );
         } else {
             scheme = new SchemeImplicit(
@@ -216,8 +213,8 @@ public class GraphicBuilder extends JFrame {
                     schemeParameters.getL(),
                     schemeParameters.getLambda(),
                     schemeParameters.getN(),
-                    I,
-                    J
+                    stepsI,
+                    stepsJ
             );
         }
 
