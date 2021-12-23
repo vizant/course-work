@@ -19,8 +19,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.Arrays;
 import java.util.function.Function;
 
 public class GraphicBuilder extends JFrame {
@@ -57,6 +55,7 @@ public class GraphicBuilder extends JFrame {
                     schemeParameters.getStepR(),
                     schemeParameters.getStepZ()
             );
+
         } else {
             scheme = new SchemeImplicit(
                     schemeParameters.getR(),
@@ -69,7 +68,7 @@ public class GraphicBuilder extends JFrame {
         }
 
         ComplexMatrix resultMatrix = scheme.calculateResultMatrix();
-        printErrorsForCurrentScheme(1, 4);
+        //printErrorsForCurrentScheme(1, 4);
         var dataset = new XYSeriesCollection();
 
         Function<Integer, double[]> getSchemeLine;
@@ -198,6 +197,8 @@ public class GraphicBuilder extends JFrame {
     private AbstractScheme createIdealScheme(int stepsI, int stepsJ) {
         AbstractScheme scheme;
 
+        AbstractScheme doubleStepScheme;
+
         if (schemeParameters.getSchemeType() == SchemeType.CN) {
             scheme = new SchemeCN(
                     schemeParameters.getR(),
@@ -207,6 +208,7 @@ public class GraphicBuilder extends JFrame {
                     stepsI,
                     stepsJ
             );
+
         } else {
             scheme = new SchemeImplicit(
                     schemeParameters.getR(),
