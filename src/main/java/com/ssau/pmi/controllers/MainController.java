@@ -100,8 +100,8 @@ public class MainController implements Initializable {
                             .N(Double.parseDouble(inputFieldN))
                             .lambda(Double.parseDouble(inputFieldLambda))
                             .fixedValues(fixedValues)
-                            .stepR(Integer.parseInt(inputFieldStepR))
-                            .stepZ(Integer.parseInt(inputFieldStepZ))
+                            .listStepR(Arrays.stream(inputFieldStepR.split("\\s+")).map(Integer::parseInt).collect(Collectors.toList()))
+                            .listStepZ(Arrays.stream(inputFieldStepZ.split("\\s+")).map(Integer::parseInt).collect(Collectors.toList()))
                             .variable(getSelectedVariable())
                             .schemeType(getSelectedSchemeType())
                             .build();
@@ -124,21 +124,24 @@ public class MainController implements Initializable {
                 errorMessage.append(msg);
             }
 
+            if (schemeParameters.getListStepR().size() != schemeParameters.getListStepZ().size()) {
+                isValidParameters = false;
+                String msg = "Количество параметров по r и z должны совпадать";
+                errorMessage.append(msg);
+            }
+
+            for (int i = 0; i < schemeParameters.getListStepR().size(); i++) {
+                if (schemeParameters.getListStepR().get(i) <= 0
+                || schemeParameters.getListStepZ().get(i) <= 0) {
+                    isValidParameters = false;
+                    String msg = "Некорректный шаг по r или z\n";
+                    errorMessage.append(msg);
+                }
+            }
+
             if (schemeParameters.getLambda() <= 0) {
                 isValidParameters = false;
                 String msg = "Параметр λ должен быть больше или равен 0\n";
-                errorMessage.append(msg);
-            }
-
-            if (schemeParameters.getStepR() <= 0) {
-                isValidParameters = false;
-                String msg = "Некорректный шаг по r\n";
-                errorMessage.append(msg);
-            }
-
-            if (schemeParameters.getStepZ() <= 0) {
-                isValidParameters = false;
-                String msg = "Некорректный шаг по z\n";
                 errorMessage.append(msg);
             }
 

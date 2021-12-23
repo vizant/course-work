@@ -12,8 +12,8 @@ public class SchemeParameters {
     private double L;
     private double N;
     private double lambda;
-    private int stepR;
-    private int stepZ;
+    private List<Integer> listStepR;
+    private List<Integer> listStepZ;
     private List<Double> fixedValues;
     private Variable variable;
     private SchemeType schemeType;

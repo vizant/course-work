@@ -19,19 +19,23 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphicBuilder extends JFrame {
     private SchemeParameters schemeParameters;
     private Font mainFont;
-    private AbstractScheme scheme;
+    private Font labelFont;
+    private List<AbstractScheme> schemes;
 
     public GraphicBuilder(SchemeParameters schemeParameters) {
         this.schemeParameters = schemeParameters;
-        this.mainFont = new Font("Arial Unicode MS", Font.BOLD, 18);
+        this.mainFont = new Font("Arial Unicode MS", Font.BOLD, 20);
+        this.labelFont = new Font("Arial Unicode MS", Font.BOLD, 15);
     }
 
     public void initUI() {
+        schemes = new ArrayList<>();
         XYDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
@@ -47,52 +51,92 @@ public class GraphicBuilder extends JFrame {
     private XYDataset createDataset() {
 
         if (schemeParameters.getSchemeType() == SchemeType.CN) {
-            scheme = new SchemeCN(
-                    schemeParameters.getR(),
-                    schemeParameters.getL(),
-                    schemeParameters.getLambda(),
-                    schemeParameters.getN(),
-                    schemeParameters.getStepR(),
-                    schemeParameters.getStepZ()
-            );
+            for (int i = 0; i < schemeParameters.getListStepR().size(); i++) {
+                AbstractScheme localScheme = new SchemeCN(
+                        schemeParameters.getR(),
+                        schemeParameters.getL(),
+                        schemeParameters.getLambda(),
+                        schemeParameters.getN(),
+                        schemeParameters.getListStepR().get(i),
+                        schemeParameters.getListStepZ().get(i)
+                );
+                schemes.add(localScheme);
+            }
 
         } else {
-            scheme = new SchemeImplicit(
-                    schemeParameters.getR(),
-                    schemeParameters.getL(),
-                    schemeParameters.getLambda(),
-                    schemeParameters.getN(),
-                    schemeParameters.getStepR(),
-                    schemeParameters.getStepZ()
-            );
+            for (int i = 0; i < schemeParameters.getListStepR().size(); i++) {
+                AbstractScheme localScheme = new SchemeImplicit(
+                        schemeParameters.getR(),
+                        schemeParameters.getL(),
+                        schemeParameters.getLambda(),
+                        schemeParameters.getN(),
+                        schemeParameters.getListStepR().get(i),
+                        schemeParameters.getListStepZ().get(i)
+                );
+                schemes.add(localScheme);
+            }
         }
 
-        ComplexMatrix resultMatrix = scheme.calculateResultMatrix();
+        List<ComplexMatrix> resultMatrixes = new ArrayList<>();
+        for (int i = 0; i < schemes.size(); i++) {
+            resultMatrixes.add(schemes.get(i).calculateResultMatrix());
+        }
+
         //printErrorsForCurrentScheme(1, 4);
         var dataset = new XYSeriesCollection();
 
-        Function<Integer, double[]> getSchemeLine;
-        Function<Integer, Integer> getSchemeLayer;
+        //Function<Integer, double[]> getSchemeLine;
+        /*Function<Integer, Integer> getSchemeLayer;
         Function<Integer, String> getSeriesLabel;
-        final double h;
-        AbstractScheme finalScheme = scheme;
+        Function<Integer, Double> getH;
+        BiFunction<Integer, Integer, double[]> getSchemeLine;
         if (schemeParameters.getVariable() == Variable.Z) {
-            h = scheme.getH_r();
-            getSchemeLine = resultMatrix::getColumn;
+            getH = (x) -> schemes.get(x).getH_r();
+            getSchemeLine = (x, y) -> (resultMatrixes.get(x).getColumn(y));
             getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_z());
             getSeriesLabel = (x) -> (Variable.Z.name().toLowerCase() + Constants.SPACE + Constants.EQUAL
                     + Constants.SPACE + schemeParameters.getFixedValues().get(x));
         } else {
-            h = scheme.getH_z();
+            getH = (x) -> schemes.get(x).getH_z();
             getSchemeLine = resultMatrix::getRow;
             getSchemeLayer = (x) -> (int) (schemeParameters.getFixedValues().get(x) / finalScheme.getH_r());
             getSeriesLabel = (x) -> (Variable.R.name().toLowerCase() + Constants.SPACE + Constants.EQUAL
                     + Constants.SPACE + schemeParameters.getFixedValues().get(x));
-        }
+        }*/
 
         for (int i = 0; i < schemeParameters.getFixedValues().size(); i++) {
+            for (int j = 0; j < schemes.size(); j++) {
+                final double h;
+                AbstractScheme currentScheme = schemes.get(j);
+                ComplexMatrix currentResultMatrix = resultMatrixes.get(j);
+                if (schemeParameters.getVariable() == Variable.Z) {
+                    h = currentScheme.getH_r();
+                    int layer = (int) (schemeParameters.getFixedValues().get(i) / currentScheme.getH_z());
+                    double[] schemeLine = currentResultMatrix.getColumn(layer + 1);
+                    String label = Variable.Z.name().toLowerCase() + Constants.SPACE + Constants.EQUAL
+                            + Constants.SPACE + schemeParameters.getFixedValues().get(i)
+                            + " ( I=" + schemeParameters.getListStepR().get(j) + ", J=" + schemeParameters.getListStepZ().get(j) + ")";
+                    var series = new XYSeries(label);
+                    for (int k = 0; k < schemeLine.length; k++) {
+                        series.add(k * h, schemeLine[k]);
+                    }
+                    dataset.addSeries(series);
+                } else {
+                    h = currentScheme.getH_z();
+                    int layer = (int) (schemeParameters.getFixedValues().get(i) / currentScheme.getH_r());
+                    double[] schemeLine = currentResultMatrix.getRow(layer + 1);
+                    String label = Variable.R.name().toLowerCase() + Constants.SPACE + Constants.EQUAL
+                            + Constants.SPACE + schemeParameters.getFixedValues().get(i)
+                            + " ( I=" + schemeParameters.getListStepR().get(j) + ", J=" + schemeParameters.getListStepZ().get(j) + ")";
+                    var series = new XYSeries(label);
+                    for (int k = 0; k < schemeLine.length; k++) {
+                        series.add(k * h, schemeLine[k]);
+                    }
+                    dataset.addSeries(series);
+                }
+            }
 
-            int layer = getSchemeLayer.apply(i);
+            /*int layer = getSchemeLayer.apply(i);
             double[] localArray = getSchemeLine.apply(layer + 1);
 
             var series = new XYSeries(getSeriesLabel.apply(i));
@@ -100,7 +144,7 @@ public class GraphicBuilder extends JFrame {
             for (int j = 0; j < localArray.length; j++) {
                 series.add(j * h, localArray[j]);
             }
-            dataset.addSeries(series);
+            dataset.addSeries(series);*/
         }
 
         return dataset;
@@ -112,14 +156,10 @@ public class GraphicBuilder extends JFrame {
 
         if (schemeParameters.getSchemeType().equals(SchemeType.CN)) {
             title = String.format(Constants.PARAMETERS_INFO_CN,
-                    schemeParameters.getStepR(),
-                    schemeParameters.getStepZ(),
                     schemeParameters.getVariable().name().toLowerCase(),
                     Constants.FOR_CN);
         } else {
             title = String.format(Constants.PARAMETERS_INFO_IMPLICIT,
-                    schemeParameters.getStepR(),
-                    schemeParameters.getStepZ(),
                     schemeParameters.getVariable().name().toLowerCase(),
                     Constants.FOR_IMPLICIT);
         }
@@ -164,12 +204,13 @@ public class GraphicBuilder extends JFrame {
         plot.setDomainGridlinePaint(Color.BLACK);
 
         chart.getLegend().setFrame(BlockBorder.NONE);
+        chart.getLegend().setItemFont(labelFont);
         chart.setTitle(new TextTitle(title, mainFont));
 
         return chart;
     }
 
-    private void printErrorsForCurrentScheme(double r, double z) {
+    /*private void printErrorsForCurrentScheme(double r, double z) {
         AbstractScheme firstScheme = createIdealScheme(schemeParameters.getStepR(), schemeParameters.getStepZ());
         int[] firstLayers = firstScheme.getSchemeLayersPoint(r, z);
         ComplexMatrix firstComplexMatrix = firstScheme.calculateResultMatrix();
@@ -192,7 +233,7 @@ public class GraphicBuilder extends JFrame {
         System.out.println("second error = " + secondError);
 
         System.out.println("result = " + firstError / secondError + "\n\n");
-    }
+    }*/
 
     private AbstractScheme createIdealScheme(int stepsI, int stepsJ) {
         AbstractScheme scheme;
